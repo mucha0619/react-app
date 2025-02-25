@@ -1,11 +1,31 @@
+import React, { useState, useEffect } from 'react';
 import styles from '../styles/Navigation.module.css';
 
 interface NavigationProps {
   activeTab: 'market' | 'accessory' | 'gem' | 'party' | 'efficiency';
   setActiveTab: (tab: 'market' | 'accessory' | 'gem' | 'party' | 'efficiency') => void;
+  onApiKeyChange: (apiKey: string) => void;
 }
 
-export default function Navigation({ activeTab, setActiveTab }: NavigationProps) {
+const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab, onApiKeyChange }) => {
+  const [apiKey, setApiKey] = useState('');
+
+  useEffect(() => {
+    // 로컬 스토리지에서 API 키 불러오기
+    const savedApiKey = localStorage.getItem('loaApiKey');
+    if (savedApiKey) {
+      setApiKey(savedApiKey);
+      onApiKeyChange(savedApiKey);
+    }
+  }, [onApiKeyChange]);
+
+  const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newApiKey = e.target.value;
+    setApiKey(newApiKey);
+    localStorage.setItem('loaApiKey', newApiKey);
+    onApiKeyChange(newApiKey);
+  };
+
   return (
     <nav className={styles.nav}>
       <h1 className={styles.logo}>KuLoa</h1>
@@ -41,6 +61,17 @@ export default function Navigation({ activeTab, setActiveTab }: NavigationProps)
           스펙업효율
         </button>
       </div>
+      <div className={styles.apiKeyContainer}>
+        <input
+          type="text"
+          value={apiKey}
+          onChange={handleApiKeyChange}
+          placeholder="API Key 입력"
+          className={styles.apiKeyInput}
+        />
+      </div>
     </nav>
   );
-}
+};
+
+export default Navigation;

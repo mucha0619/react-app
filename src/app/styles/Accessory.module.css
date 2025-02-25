@@ -1,0 +1,530 @@
+.container {
+  padding: 0rem;
+  color: white;
+  max-width: 100%;
+  margin: 0rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0rem;
+}
+
+.tab {
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.tab.active {
+  background: #4a90e2;
+}
+
+.searchContainer {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.searchSection {
+  flex: 1;
+  min-width: 30%;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.searchSectionTitle {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #4a90e2;
+}
+
+.searchOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.gradeSelector, .qualitySelector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.gradeSelector select {
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: white;
+}
+
+.qualitySelector {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.qualitySelector input[type="number"] {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 14px;
+}
+
+.qualitySelector input[type="number"]:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.qualitySelector input[type="number"]::-webkit-inner-spin-button,
+.qualitySelector input[type="number"]::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+.effectsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.effectsList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.effectsList::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.effectsList::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.effectOption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-radius: 4px;
+  /* background: rgba(255, 255, 255, 0.05); */
+}
+
+.effectName {
+  flex: 1;
+  margin-right: 24px;
+}
+
+.effectLevels {
+  display: flex;
+  gap: 8px;
+}
+
+.levelButton {
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  font-size: 0.85rem;
+  min-width: 32px;
+}
+
+.levelButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.levelButton.active {
+  background: #4a90e2;
+  border-color: #4a90e2;
+}
+
+.searchResultsContainer {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.typeResults {
+  margin-bottom: 1.5rem;
+}
+
+.typeTitle {
+  font-size: 1.2rem;
+  color: #4a90e2;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.resultsList {
+  margin-top: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: white;
+}
+
+.resultHeader {
+  margin-bottom: 16px;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.resultHeader h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.2em;
+  color: #fff;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.resultItem {
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin-bottom: 3rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.resultItem:last-child {
+  margin-bottom: 0;
+  margin-bottom: 1rem;
+}
+
+.itemInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.itemMainInfo {
+  flex: 1;
+  flex-grow: 1;
+}
+
+.itemEffects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.effect {
+  background-color: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  display: inline-block;
+  background: rgba(74, 144, 226, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+  color: #4a90e2;
+  border: 1px solid rgba(74, 144, 226, 0.3);
+}
+
+.itemDetails {
+  display: flex;
+  gap: 16px;
+  font-size: 0.9em;
+  color: #666;
+  display: flex;
+  gap: 1rem;
+  color: #a0a0a0;
+  font-size: 0.9rem;
+}
+
+.itemActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  white-space: nowrap;
+}
+
+.price {
+  font-weight: bold;
+  color: #333;
+  color: #00ff00;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 1.2em;
+  color: #999;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.25rem;
+  transition: color 0.2s;
+}
+
+.removeButton:hover {
+  color: #ff4444;
+}
+
+.noResults {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.error {
+  color: #ff4444;
+  text-align: center;
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ffdddd;
+  border-radius: 4px;
+  background-color: #fff8f8;
+  color: #ff4444;
+  text-align: center;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background: rgba(255, 68, 68, 0.1);
+  border-radius: 4px;
+}
+
+.resultGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.itemCard {
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.itemCard:hover {
+  transform: translateY(-2px);
+}
+
+.itemHeader {
+  padding: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.itemName {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.itemQuality {
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.itemOptions {
+  padding: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.option {
+  margin: 0.25rem 0;
+  color: #e0e0e0;
+}
+
+.itemFooter {
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.price {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.goldAmount {
+  color: #ffd700;
+  font-weight: 500;
+}
+
+.tradeInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: right;
+  color: #a0a0a0;
+}
+
+.ancient {
+  background: linear-gradient(to right, #c7b98c, #8e7d4f);
+  color: #fff;
+}
+
+.relic {
+  background: linear-gradient(to right, #ff6b6b, #c92a2a);
+  color: #fff;
+}
+
+.commonSearchOptions {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.optionGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.optionGroup label {
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+.optionGroup select,
+.optionGroup input {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 0.9rem;
+}
+
+.optionGroup select:focus,
+.optionGroup input:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.optionGroup input[type="number"]::-webkit-inner-spin-button,
+.optionGroup input[type="number"]::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+.searchResultCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.searchResultHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.removeButton:hover {
+  color: #ff4444;
+}
+
+.searchButton {
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.searchButton:hover {
+  background: #357abd;
+}
+
+.searchButton:disabled {
+  background: #666;
+  cursor: not-allowed;
+}

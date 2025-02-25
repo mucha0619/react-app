@@ -58,8 +58,8 @@ const ITEM_CATEGORIES: ItemCategory[] = [
     id: 'fusion',
     title: '융화 재료',
     items: [
-      '최상급 오레하 융화 재료',
-      '아비도스 융화 재료'
+      '아비도스 융화 재료',
+      '최상급 오레하 융화 재료'
     ]
   },
   {
