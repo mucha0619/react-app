@@ -1,0 +1,178 @@
+.container {
+  width: 100%;
+  max-width: 2000px;
+  margin: 0 auto;
+  padding: 1rem;
+  color: white;
+}
+
+.requirementsContainer {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.requirementsRow {
+  display: flex;
+  justify-content: flex-start;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1.5rem;
+  border-radius: 8px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.leftGroup, .rightGroup {
+  display: flex;
+  gap: 2rem;
+  flex: 0 1 auto;
+}
+
+.rightGroup {
+  margin-left: 4rem;
+}
+
+.requirementGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  width: 200px;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.label {
+  color: #fb923c;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  text-align: left;
+  min-width: 90px;
+}
+
+.labelSmall {
+  color: #ccc;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 0.6rem;
+  color: #fff;
+  width: 80px;
+  min-width: 80px;
+  font-size: 0.9rem;
+}
+
+.input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.input[type="number"]::-webkit-outer-spin-button,
+.input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.select {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 0.6rem;
+  color: #fff;
+  width: 120px;
+  min-width: 120px;
+  font-size: 0.9rem;
+}
+
+.searchSection {
+  margin-top: 2rem;
+}
+
+.searchWrapper {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.searchInput {
+  padding: 0.6rem;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  min-width: 180px;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.searchButton {
+  padding: 0.6rem 1.5rem;
+  font-size: 0.9rem;
+  background: #fb923c;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.searchButton:hover {
+  background: #f97316;
+}
+
+.searchButton:active {
+  background: #ea580c;
+}
+
+.resultsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.partyCard {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.partyTitle {
+  font-size: 1.1rem;
+  color: #fb923c;
+  margin: 0;
+}
+
+.partyInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+}
+
+.infoLabel {
+  color: #ccc;
+}
+
+.loading {
+  text-align: center;
+  color: #ccc;
+  padding: 2rem;
+}

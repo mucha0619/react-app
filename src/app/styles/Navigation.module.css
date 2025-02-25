@@ -1,0 +1,47 @@
+.nav {
+  background-color: rgb(31 41 55);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  margin: 0 auto;
+  height: 4rem;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: rgb(249 115 22);
+  margin: 3rem;
+  padding-left: 0;
+}
+
+.buttonGroup {
+  display: flex;
+  margin-left: 1rem;
+}
+
+.navButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.5rem;
+  border-bottom-width: 2px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-color: transparent;
+  color: rgb(209 213 219);
+}
+
+.navButton:hover {
+  color: white;
+  border-color: rgb(209 213 219);
+}
+
+.navButton + .navButton {
+  margin-left: 2rem;
+}
+
+.active {
+  color: rgb(249 115 22);
+  border-color: rgb(249 115 22);
+}

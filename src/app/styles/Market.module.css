@@ -1,0 +1,322 @@
+.container {
+  width: 100%;
+  max-width: 2000px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: white;
+}
+
+.searchBar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
+
+.searchButton {
+  padding: 0.5rem 1.5rem;
+  background: #4a4a4a;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.searchButton:hover {
+  background: #5a5a5a;
+}
+
+.marketLayout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.categoryContainer {
+  display: flex;
+  gap: 0rem;
+  width: 100%;
+}
+
+.mainGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  column-gap: 0.5rem;
+  row-gap: 0;
+  width: 70%;
+  padding: 0;
+}
+
+.category {
+  display: flex;
+  flex-direction: column;
+  gap: 0rem;
+  width: 65%;
+  min-width: 300px;
+}
+
+.destruction, .guardian, .leapstone, .honor-shard, .fusion, .additional {
+  width: 45%;
+}
+
+.engraving {
+  width: 40%;
+}
+
+
+
+
+
+.categoryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+}
+
+.categoryHeader:hover {
+  opacity: 0.8;
+}
+
+.categoryHeader h2 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.categoryTitle {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #fb923c;
+  margin: 0;
+}
+
+.collapseIcon {
+  font-size: 1rem;
+  opacity: 0.7;
+  padding: 0.5rem;
+  width: 2rem;
+  text-align: center;
+}
+
+.itemGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.itemGrid.collapsed {
+  max-height: 0;
+  margin-top: 0;
+}
+
+.itemCard {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  padding: 0.8cap;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  margin: 0;
+}
+
+.itemCard:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.3rem;
+}
+
+.itemList .itemCard {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.itemList .itemCard:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.itemBasicInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.itemList .itemBasicInfo {
+  gap: 1rem;
+  flex: 1;
+}
+
+.itemIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.itemName {
+  font-size: 0.9rem;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemList .itemName {
+  font-size: 0.95rem;
+}
+
+.priceInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: flex-end;
+}
+
+.itemList .priceInfo {
+  min-width: 120px;
+}
+
+.price {
+  font-size: 0.9rem;
+  margin: 0;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.change {
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  min-width: 80px;
+  text-align: right;
+}
+
+.increase {
+  color: #4ade80;
+}
+
+.decrease {
+  color: #f87171;
+}
+
+.error {
+  color: #ff6b6b;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: rgba(255, 107, 107, 0.1);
+  border-radius: 8px;
+}
+
+.loading {
+  text-align: center;
+  color: #ccc;
+  padding: 2rem;
+}
+
+.requirementGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  width: 200px;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.leftGroup, .rightGroup {
+  display: flex;
+  gap: 2rem;
+  flex: 0 1 auto;
+}
+
+.rightGroup {
+  margin-left: 4rem;
+}
+
+.requirementsRow {
+  display: flex;
+  justify-content: flex-start;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1.5rem;
+  border-radius: 8px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 0.6rem;
+  color: #fff;
+  width: 80px;
+  min-width: 80px;
+  font-size: 0.9rem;
+}
+
+.select {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 0.6rem;
+  color: #fff;
+  width: 120px;
+  min-width: 120px;
+  font-size: 0.9rem;
+}
+
+.label {
+  color: #fb923c;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  text-align: left;
+  min-width: 90px;
+}
+
+.labelSmall {
+  color: #ccc;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* 아이템 등급별 색상 */
+.일반 { color: #ffffff; }
+.고급 { color: #8dd238; }
+.희귀 { color: #4e9ced; }
+.영웅 { color: #d84df5; }
+.전설 { color: #ffc600; }
+.유물 { color: #f43f5e; }
+.고대 { color: #fb923c; }
+
+/* 반응형 디자인 */
+@media (max-width: 1200px) {
+  .itemGrid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
