@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from '../styles/Accessory.module.css';
+import { formatGold } from '@/app/utils/format';
 
 interface PolishEffect {
   name: string;
@@ -265,15 +266,7 @@ const initialSearchOption: SearchOption = {
   effects: []
 };
 
-const formatGold = (price: number): string => {
-  return new Intl.NumberFormat('ko-KR').format(price);
-};
-
-type EffectMappings = {
-  [key: string]: string;
-};
-
-const getEffectMappings = (): EffectMappings => ({
+const getEffectMappings = (): { [key: string]: string } => ({
   // 목걸이
   '추가 피해': '추가 피해',
   '적에게 주는 피해 증가': '적에게 주는 피해 증가',

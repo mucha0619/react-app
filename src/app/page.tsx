@@ -22,7 +22,7 @@ export default function Home() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {activeTab === 'market' && <Market apiKey={apiKey} />}
         {activeTab === 'accessory' && <Accessory apiKey={apiKey} />}
-        {activeTab === 'gem' && <Gem />}
+        {activeTab === 'gem' && <Gem apiKey={apiKey} />}
         {activeTab === 'party' && <PartyFinder />}
         {activeTab === 'efficiency' && <Efficiency />}
       </main>
