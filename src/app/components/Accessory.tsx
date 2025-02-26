@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from '../styles/Accessory.module.css';
 
 interface PolishEffect {
@@ -66,13 +66,13 @@ const EARRING_EFFECTS: PolishEffect[] = [
   },
   {
     name: '파티원 보호막 효과',
-    displayName: '보호막',
+    displayName: '보호막 효과',
     code: 53,
     values: { high: '3.50', medium: '2.10', low: '0.95' }
   },
   {
     name: '파티원 회복 효과',
-    displayName: '회복',
+    displayName: '회복 효과',
     code: 54,
     values: { high: '3.50', medium: '2.10', low: '0.95' }
   },
@@ -188,6 +188,72 @@ interface SavedSearchResult {
   data: SearchResult['data'] | null;
 }
 
+interface AuctionItem {
+  Id: number;
+  Name: string;
+  Grade: string;
+  Tier: number;
+  Level: number;
+  Icon: string;
+  GradeQuality: number;
+  AuctionInfo: {
+    StartPrice: number;
+    BuyPrice: number;
+    BidPrice: number;
+    EndDate: string;
+    BidCount: number;
+    BidStartPrice: number;
+    IsCompetitive: boolean;
+    TradeAllowCount: number;
+    UpgradeLevel: number;
+  };
+  Options: {
+    Type: string;
+    OptionName: string;
+    OptionNameTripod: string;
+    Value: number;
+    IsPenalty: boolean;
+    IsSkillOption: boolean;
+    IsClassOption: boolean;
+    ClassName: string;
+    IsEstherOption: boolean;
+    IsEndContents: boolean;
+    IsSetOptions: boolean;
+    SetOptions: any[];
+    IsFixed: boolean;
+    IsLevelOption: boolean;
+    IsGemOption: boolean;
+    IsCombatStats: boolean;
+    IsInvalidOption: boolean;
+    IsEdited: boolean;
+    IsHighlight: boolean;
+    MaxValue: number;
+    MinValue: number;
+    ValueType: string;
+    IsAuthentic: boolean;
+    IsBestOption: boolean;
+    IsInvalidCustomOption: boolean;
+    IsLowPenalty: boolean;
+    IsRequiredOption: boolean;
+    IsSelectOption: boolean;
+    IsStarOption: boolean;
+    IsStateOption: boolean;
+    IsUnique: boolean;
+    IsUniqueOption: boolean;
+    IsDestruction: boolean;
+    IsExist: boolean;
+    IsGroup: boolean;
+    IsGroupExist: boolean;
+    IsMoving: boolean;
+    IsSigil: boolean;
+    IsSkill: boolean;
+    IsSkillGroup: boolean;
+    IsStack: boolean;
+    IsUseInRecipe: boolean;
+    IsValuePercentage: boolean;
+  }[];
+}
+
 const initialCommonSearchOption: CommonSearchOption = {
   grade: '유물',
   quality: 0,
@@ -231,6 +297,128 @@ const getEffectDisplayName = (effectType: string): string => {
   const allEffects = [...NECKLACE_EFFECTS, ...EARRING_EFFECTS, ...RING_EFFECTS];
   const effect = allEffects.find(e => e.name === effectType);
   return effect?.displayName || effectType;
+};
+
+const getEffectMapping = (type: 'necklace' | 'earring' | 'ring', effectType: string, level: string) => {
+  let secondOption = 0;
+  let value = 0;
+
+  if (type === 'necklace') {
+    if (effectType === '추가 피해') {
+      secondOption = 41;
+      value = level === '상' ? 260
+        : level === '중' ? 160
+        : 70;
+    }
+    else if (effectType === '적에게 주는 피해 증가') {
+      secondOption = 42;
+      value = level === '상' ? 200
+        : level === '중' ? 120
+        : 55;
+    }
+    else if (effectType === '낙인력') {
+      secondOption = 44;
+      value = level === '상' ? 800
+        : level === '중' ? 480
+        : 215;
+    }
+    else if (effectType === '게이지 획득') {
+      secondOption = 43;
+      value = level === '상' ? 600
+        : level === '중' ? 360
+        : 160;
+    }
+    else if (effectType === '공격력 +') {
+      secondOption = 53;
+      value = level === '상' ? 390
+        : level === '중' ? 195
+        : 80;
+    }
+    else if (effectType === '무기 공격력 +') {
+      secondOption = 54;
+      value = level === '상' ? 960
+        : level === '중' ? 480
+        : 195;
+    }
+  }
+  else if (type === 'earring') {
+    if (effectType === '공격력 %') {
+      secondOption = 45;
+      value = level === '상' ? 155
+        : level === '중' ? 95
+        : 40;
+    }
+    else if (effectType === '무기 공격력 %') {
+      secondOption = 46;
+      value = level === '상' ? 300
+        : level === '중' ? 180
+        : 80;
+    }
+    else if (effectType === '파티원 보호막 효과') {
+      secondOption = 43;
+      value = level === '상' ? 350
+        : level === '중' ? 210
+        : 95;
+    }
+    else if (effectType === '파티원 회복 효과') {
+      secondOption = 44;
+      value = level === '상' ? 350
+        : level === '중' ? 210
+        : 95;
+    }
+    else if (effectType === '공격력 +') {
+      secondOption = 53;
+      value = level === '상' ? 390
+        : level === '중' ? 195
+        : 80;
+    }
+    else if (effectType === '무기 공격력 +') {
+      secondOption = 54;
+      value = level === '상' ? 960
+        : level === '중' ? 480
+        : 195;
+    }
+  }
+  else if (type === 'ring') {
+    if (effectType === '치명타 적중률') {
+      secondOption = 49;
+      value = level === '상' ? 155
+        : level === '중' ? 95
+        : 40;
+    }
+    else if (effectType === '치명타 피해') {
+      secondOption = 50;
+      value = level === '상' ? 400
+        : level === '중' ? 240
+        : 110;
+    }
+    else if (effectType === '아군 공격력 강화 효과') {
+      secondOption = 51;
+      value = level === '상' ? 500
+        : level === '중' ? 300
+        : 135;
+    }
+    else if (effectType === '아군 피해량 강화 효과') {
+      secondOption = 52;
+      value = level === '상' ? 750
+        : level === '중' ? 400
+        : 200;
+    }
+    else if (effectType === '공격력 +') {
+      secondOption = 53;
+      value = level === '상' ? 390
+        : level === '중' ? 195
+        : 80;
+    }
+    else if (effectType === '무기 공격력 +') {
+      secondOption = 54;
+      value = level === '상' ? 960
+        : level === '중' ? 480
+        : 195;
+    }
+  }
+
+  return { secondOption, value };
 };
 
 const AccessorySearchSection: React.FC<{
@@ -422,59 +610,28 @@ interface SearchResultsProps {
   type: 'necklace' | 'earring' | 'ring';
   data: SearchResult['data'] | null;
   searchState: SearchState;
-  onRemoveItem: (id: number) => void;
+  onRemoveItem: (id: string) => void;
 }
 
 const SearchResults: React.FC<SearchResultsProps> = ({ type, data, searchState, onRemoveItem }) => {
-  const lowestPriceItems = data?.Items ? data.Items.reduce((acc: typeof data.Items, item) => {
-    // 선택한 효과들만의 값을 키로 사용
-    const effectKey = searchState[type].effects
-      .map(selectedEffect => {
-        const mappedName = getEffectMappings()[selectedEffect.type] || selectedEffect.type;
-        const matchingOption = item.Options.find(opt => 
-          opt.Type === 'ACCESSORY_UPGRADE' && 
-          opt.OptionName === mappedName
-        );
-        return `${selectedEffect.type}_${matchingOption?.Value || 0}`;
-      })
-      .sort()
-      .join('_');
-    
-    const existingItem = acc.find(i => {
-      const existingKey = searchState[type].effects
-        .map(selectedEffect => {
-          const mappedName = getEffectMappings()[selectedEffect.type] || selectedEffect.type;
-          const matchingOption = i.Options.find(opt => 
-            opt.Type === 'ACCESSORY_UPGRADE' && 
-            opt.OptionName === mappedName
-          );
-          return `${selectedEffect.type}_${matchingOption?.Value || 0}`;
-        })
-        .sort()
-        .join('_');
-      return existingKey === effectKey;
-    });
-
-    if (!existingItem || item.AuctionInfo.BuyPrice < existingItem.AuctionInfo.BuyPrice) {
-      if (existingItem) {
-        acc = acc.filter(i => i !== existingItem);
-      }
-      acc.push(item);
-    }
-
-    return acc;
-  }, []) : [];
-
   const typeTitle = type === 'necklace' ? '목걸이' : 
                    type === 'earring' ? '귀걸이' : '반지';
+
+  // 검색 조건을 문자열로 변환하여 표시
+  const searchCondition = searchState[type].effects
+    .map(effect => `${effect.type} ${effect.level}`)
+    .join(', ');
 
   return (
     <div className={styles.resultList}>
       <div className={styles.resultHeader}>
         <h3>{typeTitle} 검색 결과</h3>
+        <div className={styles.searchCondition}>
+          검색 조건: {searchCondition}
+        </div>
       </div>
-      {lowestPriceItems.length > 0 ? (
-        lowestPriceItems.map((item) => (
+      {data?.Items && data.Items.length > 0 ? (
+        data.Items.map((item) => (
           <div key={item.Id} className={styles.resultItem}>
             <div className={styles.itemInfo}>
               <div className={styles.itemMainInfo}>
@@ -482,7 +639,6 @@ const SearchResults: React.FC<SearchResultsProps> = ({ type, data, searchState, 
                   {item.Options
                     .filter(opt => opt.Type === 'ACCESSORY_UPGRADE')
                     .map((opt, idx) => {
-                      // 귀걸이의 공격력과 무기공격력은 % 표시 추가
                       let displayName = opt.OptionName;
                       if (type === 'earring' && (opt.OptionName === '공격력' || opt.OptionName === '무기 공격력')) {
                         displayName = `${opt.OptionName}%`;
@@ -490,7 +646,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({ type, data, searchState, 
                       
                       const value = opt.IsValuePercentage ? opt.Value.toFixed(2) : opt.Value;
                       return (
-                        <span key={idx} className={styles.effect}>
+                        <span key={`${item.Id}-${opt.OptionName}-${opt.Value}`} className={styles.effect}>
                           {`${displayName} +${value}${opt.IsValuePercentage ? '%' : ''}`}
                         </span>
                       );
@@ -509,7 +665,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({ type, data, searchState, 
                 <span className={styles.price}>{formatGold(item.AuctionInfo.BuyPrice)} G</span>
                 <button 
                   className={styles.removeButton}
-                  onClick={() => onRemoveItem(item.Id)}
+                  onClick={() => onRemoveItem(`${type}_${item.Id}`)}
                   aria-label="아이템 삭제"
                 >
                   🗑️
@@ -528,9 +684,9 @@ const SearchResults: React.FC<SearchResultsProps> = ({ type, data, searchState, 
 const AccessorySearch: React.FC<AccessorySearchProps> = ({ apiKey }) => {
   const [searchState, setSearchState] = useState<SearchState>({
     common: initialCommonSearchOption,
-    necklace: initialSearchOption,
-    earring: initialSearchOption,
-    ring: initialSearchOption
+    necklace: { effects: [] },
+    earring: { effects: [] },
+    ring: { effects: [] }
   });
 
   const [savedSearches, setSavedSearches] = useState<SavedSearchResult[]>([]);
@@ -540,6 +696,139 @@ const AccessorySearch: React.FC<AccessorySearchProps> = ({ apiKey }) => {
     ring: false
   });
   const [error, setError] = useState<string | null>(null);
+  const [autoRefresh, setAutoRefresh] = useState(false);
+  const [lastRefreshTime, setLastRefreshTime] = useState<Date | null>(null);
+  const autoRefreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 자동 갱신 타이머 설정/해제
+  useEffect(() => {
+    if (autoRefresh && savedSearches.length > 0) {
+      // 5분마다 저장된 검색 결과 갱신
+      const refreshSearches = async () => {
+        setLastRefreshTime(new Date());
+        
+        // 각 저장된 검색에 대해 새로운 검색 실행
+        for (const search of savedSearches) {
+          setIsLoading(prev => ({ ...prev, [search.type]: true }));
+          try {
+            const response = await fetch('https://developer-lostark.game.onstove.com/auctions/items', {
+              method: 'POST',
+              headers: {
+                'accept': 'application/json',
+                'authorization': `bearer ${apiKey}`,
+                'content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                CategoryCode: search.type === 'necklace' ? 200010 : search.type === 'earring' ? 200020 : 200030,
+                ItemTier: 4,
+                ItemGrade: search.searchState.common.grade === '고대' ? '고대' : '유물',
+                PageNo: 1,
+                PageSize: 10,
+                SortCondition: 'ASC',
+                Sort: 'BUY_PRICE',
+                ItemTradeAllowCount: search.searchState.common.tradeCount || 0,
+                ItemUpgradeLevel: search.searchState.common.polishCount || 0,
+                ItemGradeQuality: search.searchState.common.quality || 0,
+                EtcOptions: search.searchState[search.type].effects.map(effect => {
+                  const effectMapping = getEffectMapping(search.type, effect.type, effect.level);
+                  return {
+                    FirstOption: 7,
+                    SecondOption: effectMapping.secondOption,
+                    Value: effectMapping.value,
+                    MinValue: effectMapping.value,
+                    MaxValue: effectMapping.value
+                  };
+                }).filter(option => option.SecondOption !== 0)
+              })
+            });
+
+            const responseText = await response.text();
+            if (!response.ok) {
+              throw new Error(`API Error: ${response.status} - ${responseText}`);
+            }
+
+            const data = responseText ? JSON.parse(responseText) : null;
+            
+            if (data?.Items?.length) {
+              // 각 검색 결과에서 최저가만 필터링
+              const filteredItems = data.Items.reduce((acc: AuctionItem[], item: AuctionItem) => {
+                const effectKey = search.searchState[search.type].effects
+                  .map(selectedEffect => {
+                    const mappedName = getEffectMappings()[selectedEffect.type] || selectedEffect.type;
+                    const matchingOption = item.Options.find(opt => 
+                      opt.Type === 'ACCESSORY_UPGRADE' && 
+                      opt.OptionName === mappedName
+                    );
+                    return `${selectedEffect.type}_${matchingOption?.Value || 0}`;
+                  })
+                  .sort()
+                  .join('_');
+                
+                const existingItem = acc.find(i => {
+                  const existingKey = search.searchState[search.type].effects
+                    .map(selectedEffect => {
+                      const mappedName = getEffectMappings()[selectedEffect.type] || selectedEffect.type;
+                      const matchingOption = i.Options.find(opt => 
+                        opt.Type === 'ACCESSORY_UPGRADE' && 
+                        opt.OptionName === mappedName
+                      );
+                      return `${selectedEffect.type}_${matchingOption?.Value || 0}`;
+                    })
+                    .sort()
+                    .join('_');
+                  return existingKey === effectKey;
+                });
+
+                if (!existingItem || item.AuctionInfo.BuyPrice < existingItem.AuctionInfo.BuyPrice) {
+                  if (existingItem) {
+                    acc = acc.filter(i => i !== existingItem);
+                  }
+                  acc.push(item);
+                }
+
+                return acc;
+              }, []);
+
+              setSavedSearches(prev => {
+                const otherSearches = prev.filter(s => s.id !== search.id);
+                return [...otherSearches, {
+                  ...search,
+                  data: {
+                    ...data,
+                    Items: filteredItems
+                  }
+                }];
+              });
+            }
+          } catch (error) {
+            console.error(`Error refreshing ${search.type}:`, error);
+          } finally {
+            setIsLoading(prev => ({ ...prev, [search.type]: false }));
+          }
+        }
+      };
+
+      autoRefreshIntervalRef.current = setInterval(refreshSearches, 5 * 60 * 1000);
+      // 활성화 즉시 첫 갱신 실행
+      refreshSearches();
+    } else if (autoRefreshIntervalRef.current) {
+      clearInterval(autoRefreshIntervalRef.current);
+      autoRefreshIntervalRef.current = null;
+    }
+
+    return () => {
+      if (autoRefreshIntervalRef.current) {
+        clearInterval(autoRefreshIntervalRef.current);
+      }
+    };
+  }, [autoRefresh, savedSearches.length]);
+
+  const formatLastRefreshTime = (date: Date) => {
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
+  };
 
   const handleSearch = async (type: 'necklace' | 'earring' | 'ring') => {
     setIsLoading(prev => ({ ...prev, [type]: true }));
@@ -548,132 +837,14 @@ const AccessorySearch: React.FC<AccessorySearchProps> = ({ apiKey }) => {
     try {
       const searchOptions = searchState[type].effects;
       const etcOptions = searchOptions.map(effect => {
-        let secondOption = 0;
-        let effectValue = 0;
-        if (type === 'necklace') {
-          if (effect.type === '추가 피해') {
-            secondOption = 41;
-            effectValue = effect.level === '상' ? 260
-              : effect.level === '중' ? 160
-              : 70;
-          }
-          else if (effect.type === '적에게 주는 피해 증가') {
-            secondOption = 42;
-            effectValue = effect.level === '상' ? 200
-              : effect.level === '중' ? 120
-              : 55;
-          }
-          else if (effect.type === '낙인력') {
-            secondOption = 44;
-            effectValue = effect.level === '상' ? 800
-              : effect.level === '중' ? 480
-              : 215;
-          }
-          else if (effect.type === '게이지 획득') {
-            secondOption = 43;
-            effectValue = effect.level === '상' ? 600
-              : effect.level === '중' ? 360
-              : 160;
-          }
-          else if (effect.type === '공격력 +') {
-            secondOption = 53;
-            effectValue = effect.level === '상' ? 390
-              : effect.level === '중' ? 195
-              : 80;
-          }
-          else if (effect.type === '무기 공격력 +') {
-            secondOption = 54;
-            effectValue = effect.level === '상' ? 960
-              : effect.level === '중' ? 480
-              : 195;
-          }
-        }
-        else if (type === 'earring') {
-          if (effect.type === '공격력 %') {
-            secondOption = 45;
-            effectValue = effect.level === '상' ? 155
-              : effect.level === '중' ? 95
-              : 40;
-          }
-          else if (effect.type === '무기 공격력 %') {
-            secondOption = 46;
-            effectValue = effect.level === '상' ? 300
-              : effect.level === '중' ? 180
-              : 80;
-          }
-          else if (effect.type === '파티원 보호막 효과') {
-            secondOption = 43;
-            effectValue = effect.level === '상' ? 350
-              : effect.level === '중' ? 210
-              : 95;
-          }
-          else if (effect.type === '파티원 회복 효과') {
-            secondOption = 44;
-            effectValue = effect.level === '상' ? 350
-              : effect.level === '중' ? 210
-              : 95;
-          }
-          else if (effect.type === '공격력 +') {
-            secondOption = 53;
-            effectValue = effect.level === '상' ? 390
-              : effect.level === '중' ? 195
-              : 80;
-          }
-          else if (effect.type === '무기 공격력 +') {
-            secondOption = 54;
-            effectValue = effect.level === '상' ? 960
-              : effect.level === '중' ? 480
-              : 195;
-          }
-        }
-        else if (type === 'ring') {
-          if (effect.type === '치명타 적중률') {
-            secondOption = 49;
-            effectValue = effect.level === '상' ? 155
-              : effect.level === '중' ? 95
-              : 40;
-          }
-          else if (effect.type === '치명타 피해') {
-            secondOption = 50;
-            effectValue = effect.level === '상' ? 400
-              : effect.level === '중' ? 240
-              : 110;
-          }
-          else if (effect.type === '아군 공격력 강화 효과') {
-            secondOption = 51;
-            effectValue = effect.level === '상' ? 500
-              : effect.level === '중' ? 300
-              : 135;
-          }
-          else if (effect.type === '아군 피해량 강화 효과') {
-            secondOption = 52;
-            effectValue = effect.level === '상' ? 750
-              : effect.level === '중' ? 400
-              : 200;
-          }
-          else if (effect.type === '공격력 +') {
-            secondOption = 53;
-            effectValue = effect.level === '상' ? 390
-              : effect.level === '중' ? 195
-              : 80;
-          }
-          else if (effect.type === '무기 공격력 +') {
-            secondOption = 54;
-            effectValue = effect.level === '상' ? 960
-              : effect.level === '중' ? 480
-              : 195;
-          }
-        }
-        
-        const option = {
+        const effectMapping = getEffectMapping(type, effect.type, effect.level);
+        return {
           FirstOption: 7,
-          SecondOption: secondOption,
-          Value: effectValue,
-          MinValue: effectValue,
-          MaxValue: effectValue
+          SecondOption: effectMapping.secondOption,
+          Value: effectMapping.value,
+          MinValue: effectMapping.value,
+          MaxValue: effectMapping.value
         };
-
-        return option;
       }).filter(option => option.SecondOption !== 0);
 
       const searchParams = {
@@ -690,39 +861,77 @@ const AccessorySearch: React.FC<AccessorySearchProps> = ({ apiKey }) => {
         EtcOptions: etcOptions
       };
 
-      try {
-        const response = await fetch('https://developer-lostark.game.onstove.com/auctions/items', {
-          method: 'POST',
-          headers: {
-            'accept': 'application/json',
-            'authorization': `bearer ${apiKey}`,
-            'content-Type': 'application/json',
-          },
-          body: JSON.stringify(searchParams)
-        });
+      const response = await fetch('https://developer-lostark.game.onstove.com/auctions/items', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'authorization': `bearer ${apiKey}`,
+          'content-Type': 'application/json',
+        },
+        body: JSON.stringify(searchParams)
+      });
 
-        const responseText = await response.text();
-        if (!response.ok) {
-          throw new Error(`API Error: ${response.status} - ${responseText}`);
-        }
+      const responseText = await response.text();
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status} - ${responseText}`);
+      }
 
-        const data = responseText ? JSON.parse(responseText) : null;
-        
-        setSavedSearches(prev => {
-          const updated = prev.filter(item => item.type !== type);
-          if (data?.Items?.length) {
-            updated.push({
-              id: `${type}_${Date.now()}`,
-              type,
-              searchState: JSON.parse(JSON.stringify(searchState)),
-              data
-            });
+      const data = responseText ? JSON.parse(responseText) : null;
+      
+      if (data?.Items?.length) {
+        // 검색 조건을 문자열로 변환하여 검색 ID에 포함
+        const searchCondition = searchState[type].effects
+          .map(effect => `${effect.type}_${effect.level}`)
+          .sort()
+          .join('_');
+          
+        const searchId = `${type}_${searchCondition}_${Date.now()}`;
+        setSavedSearches(prev => [...prev, {
+          id: searchId,
+          type,
+          searchState: JSON.parse(JSON.stringify(searchState)),
+          data: {
+            ...data,
+            // 각 검색 결과에서 최저가만 필터링
+            Items: data.Items.reduce((acc: AuctionItem[], item: AuctionItem) => {
+              const effectKey = searchState[type].effects
+                .map(selectedEffect => {
+                  const mappedName = getEffectMappings()[selectedEffect.type] || selectedEffect.type;
+                  const matchingOption = item.Options.find(opt => 
+                    opt.Type === 'ACCESSORY_UPGRADE' && 
+                    opt.OptionName === mappedName
+                  );
+                  return `${selectedEffect.type}_${matchingOption?.Value || 0}`;
+                })
+                .sort()
+                .join('_');
+              
+              const existingItem = acc.find(i => {
+                const existingKey = searchState[type].effects
+                  .map(selectedEffect => {
+                    const mappedName = getEffectMappings()[selectedEffect.type] || selectedEffect.type;
+                    const matchingOption = i.Options.find(opt => 
+                      opt.Type === 'ACCESSORY_UPGRADE' && 
+                      opt.OptionName === mappedName
+                    );
+                    return `${selectedEffect.type}_${matchingOption?.Value || 0}`;
+                  })
+                  .sort()
+                  .join('_');
+                return existingKey === effectKey;
+              });
+
+              if (!existingItem || item.AuctionInfo.BuyPrice < existingItem.AuctionInfo.BuyPrice) {
+                if (existingItem) {
+                  acc = acc.filter(i => i !== existingItem);
+                }
+                acc.push(item);
+              }
+
+              return acc;
+            }, [])
           }
-          return updated;
-        });
-      } catch (error) {
-        console.error(`Error searching ${type}:`, error);
-        throw error;
+        }]);
       }
     } catch (error) {
       console.error('Search error:', error);
@@ -732,21 +941,8 @@ const AccessorySearch: React.FC<AccessorySearchProps> = ({ apiKey }) => {
     }
   };
 
-  const handleRemoveItem = (type: 'necklace' | 'earring' | 'ring', itemId: number) => {
-    setSavedSearches(prev => {
-      return prev.map(search => {
-        if (search.type === type && search.data?.Items) {
-          return {
-            ...search,
-            data: {
-              ...search.data,
-              Items: search.data.Items.filter(item => item.Id !== itemId)
-            }
-          };
-        }
-        return search;
-      }).filter(search => (search.data?.Items?.length ?? 0) > 0);
-    });
+  const handleRemoveItem = (type: 'necklace' | 'earring' | 'ring', searchId: string) => {
+    setSavedSearches(prev => prev.filter(item => item.id !== searchId));
   };
 
   return (
@@ -754,8 +950,8 @@ const AccessorySearch: React.FC<AccessorySearchProps> = ({ apiKey }) => {
       <div className={styles.searchContainer}>
         <AccessorySearchSection
           type="necklace"
-          effects={NECKLACE_EFFECTS}
           title="목걸이"
+          effects={NECKLACE_EFFECTS}
           searchOptions={searchState.necklace}
           onSearchOptionsChange={(options) => setSearchState({ ...searchState, necklace: options })}
           onSearch={() => handleSearch('necklace')}
@@ -763,8 +959,8 @@ const AccessorySearch: React.FC<AccessorySearchProps> = ({ apiKey }) => {
         />
         <AccessorySearchSection
           type="earring"
-          effects={EARRING_EFFECTS}
           title="귀걸이"
+          effects={EARRING_EFFECTS}
           searchOptions={searchState.earring}
           onSearchOptionsChange={(options) => setSearchState({ ...searchState, earring: options })}
           onSearch={() => handleSearch('earring')}
@@ -772,8 +968,8 @@ const AccessorySearch: React.FC<AccessorySearchProps> = ({ apiKey }) => {
         />
         <AccessorySearchSection
           type="ring"
-          effects={RING_EFFECTS}
           title="반지"
+          effects={RING_EFFECTS}
           searchOptions={searchState.ring}
           onSearchOptionsChange={(options) => setSearchState({ ...searchState, ring: options })}
           onSearch={() => handleSearch('ring')}
@@ -781,35 +977,189 @@ const AccessorySearch: React.FC<AccessorySearchProps> = ({ apiKey }) => {
         />
       </div>
 
-      <CommonSearchOptions 
-        options={searchState.common}
-        onChange={(options) => setSearchState({ ...searchState, common: options })}
-      />
+      <div className={styles.commonSearchOptions}>
+        <CommonSearchOptions 
+          options={searchState.common}
+          onChange={(options) => setSearchState({ ...searchState, common: options })}
+        />
+        <div className={styles.autoRefreshContainer}>
+          {lastRefreshTime && autoRefresh && (
+            <div className={styles.lastRefreshTime}>
+              마지막 갱신: {formatLastRefreshTime(lastRefreshTime)}
+            </div>
+          )}
+          <button
+            className={`${styles.autoRefreshButton} ${autoRefresh ? styles.active : ''}`}
+            onClick={() => setAutoRefresh(!autoRefresh)}
+            disabled={savedSearches.length === 0 || Object.values(isLoading).some(loading => loading)}
+          >
+            <span>{autoRefresh ? '자동 갱신 중' : '자동 갱신'}</span>
+            {Object.values(isLoading).some(loading => loading) && <span>...</span>}
+          </button>
+        </div>
+      </div>
       
       <div className={styles.resultsContainer}>
+        {/* 목걸이 결과 */}
         {savedSearches.some(s => s.type === 'necklace' && s.data?.Items && s.data.Items.length > 0) && (
-          <SearchResults
-            type="necklace"
-            data={savedSearches.find(s => s.type === 'necklace')?.data || null}
-            searchState={searchState}
-            onRemoveItem={(itemId) => handleRemoveItem('necklace', itemId)}
-          />
+          <div className={styles.resultList}>
+            <div className={styles.resultHeader}>
+              <h3>목걸이 검색 결과</h3>
+            </div>
+            {savedSearches
+              .filter(s => s.type === 'necklace' && s.data?.Items && s.data.Items.length > 0)
+              .map(search => (
+                <div key={search.id} className={styles.resultGroup}>
+                  {search.data?.Items.map(item => (
+                    <div key={item.Id} className={styles.resultItem}>
+                      <div className={styles.itemInfo}>
+                        <div className={styles.itemMainInfo}>
+                          <div className={styles.itemEffects}>
+                            {item.Options
+                              .filter(opt => opt.Type === 'ACCESSORY_UPGRADE')
+                              .map((opt) => {
+                                let displayName = opt.OptionName;
+                                const value = opt.IsValuePercentage ? opt.Value.toFixed(2) : opt.Value;
+                                return (
+                                  <span key={`${item.Id}-${opt.OptionName}-${opt.Value}`} className={styles.effect}>
+                                    {`${displayName} +${value}${opt.IsValuePercentage ? '%' : ''}`}
+                                  </span>
+                                );
+                              })}
+                          </div>
+                          <div className={styles.itemDetails}>
+                            <span className={styles.quality}>품질 {item.GradeQuality}</span>
+                            <span className={styles.tradeInfo}>
+                              연마 {item.AuctionInfo.UpgradeLevel}회 / 
+                              거래 {item.AuctionInfo.TradeAllowCount}회
+                            </span>
+                          </div>
+                        </div>
+                        <div className={styles.itemActions}>
+                          <span className={styles.price}>{formatGold(item.AuctionInfo.BuyPrice)} G</span>
+                          <button 
+                            className={styles.removeButton}
+                            onClick={() => handleRemoveItem('necklace', search.id)}
+                            aria-label="아이템 삭제"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+          </div>
         )}
+
+        {/* 귀걸이 결과 */}
         {savedSearches.some(s => s.type === 'earring' && s.data?.Items && s.data.Items.length > 0) && (
-          <SearchResults
-            type="earring"
-            data={savedSearches.find(s => s.type === 'earring')?.data || null}
-            searchState={searchState}
-            onRemoveItem={(itemId) => handleRemoveItem('earring', itemId)}
-          />
+          <div className={styles.resultList}>
+            <div className={styles.resultHeader}>
+              <h3>귀걸이 검색 결과</h3>
+            </div>
+            {savedSearches
+              .filter(s => s.type === 'earring' && s.data?.Items && s.data.Items.length > 0)
+              .map(search => (
+                <div key={search.id} className={styles.resultGroup}>
+                  {search.data?.Items.map(item => (
+                    <div key={item.Id} className={styles.resultItem}>
+                      <div className={styles.itemInfo}>
+                        <div className={styles.itemMainInfo}>
+                          <div className={styles.itemEffects}>
+                            {item.Options
+                              .filter(opt => opt.Type === 'ACCESSORY_UPGRADE')
+                              .map((opt) => {
+                                let displayName = opt.OptionName;
+                                if (opt.OptionName === '공격력' || opt.OptionName === '무기 공격력') {
+                                  displayName = `${opt.OptionName}%`;
+                                }
+                                const value = opt.IsValuePercentage ? opt.Value.toFixed(2) : opt.Value;
+                                return (
+                                  <span key={`${item.Id}-${opt.OptionName}-${opt.Value}`} className={styles.effect}>
+                                    {`${displayName} +${value}${opt.IsValuePercentage ? '%' : ''}`}
+                                  </span>
+                                );
+                              })}
+                          </div>
+                          <div className={styles.itemDetails}>
+                            <span className={styles.quality}>품질 {item.GradeQuality}</span>
+                            <span className={styles.tradeInfo}>
+                              연마 {item.AuctionInfo.UpgradeLevel}회 / 
+                              거래 {item.AuctionInfo.TradeAllowCount}회
+                            </span>
+                          </div>
+                        </div>
+                        <div className={styles.itemActions}>
+                          <span className={styles.price}>{formatGold(item.AuctionInfo.BuyPrice)} G</span>
+                          <button 
+                            className={styles.removeButton}
+                            onClick={() => handleRemoveItem('earring', search.id)}
+                            aria-label="아이템 삭제"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+          </div>
         )}
+
+        {/* 반지 결과 */}
         {savedSearches.some(s => s.type === 'ring' && s.data?.Items && s.data.Items.length > 0) && (
-          <SearchResults
-            type="ring"
-            data={savedSearches.find(s => s.type === 'ring')?.data || null}
-            searchState={searchState}
-            onRemoveItem={(itemId) => handleRemoveItem('ring', itemId)}
-          />
+          <div className={styles.resultList}>
+            <div className={styles.resultHeader}>
+              <h3>반지 검색 결과</h3>
+            </div>
+            {savedSearches
+              .filter(s => s.type === 'ring' && s.data?.Items && s.data.Items.length > 0)
+              .map(search => (
+                <div key={search.id} className={styles.resultGroup}>
+                  {search.data?.Items.map(item => (
+                    <div key={item.Id} className={styles.resultItem}>
+                      <div className={styles.itemInfo}>
+                        <div className={styles.itemMainInfo}>
+                          <div className={styles.itemEffects}>
+                            {item.Options
+                              .filter(opt => opt.Type === 'ACCESSORY_UPGRADE')
+                              .map((opt) => {
+                                let displayName = opt.OptionName;
+                                const value = opt.IsValuePercentage ? opt.Value.toFixed(2) : opt.Value;
+                                return (
+                                  <span key={`${item.Id}-${opt.OptionName}-${opt.Value}`} className={styles.effect}>
+                                    {`${displayName} +${value}${opt.IsValuePercentage ? '%' : ''}`}
+                                  </span>
+                                );
+                              })}
+                          </div>
+                          <div className={styles.itemDetails}>
+                            <span className={styles.quality}>품질 {item.GradeQuality}</span>
+                            <span className={styles.tradeInfo}>
+                              연마 {item.AuctionInfo.UpgradeLevel}회 / 
+                              거래 {item.AuctionInfo.TradeAllowCount}회
+                            </span>
+                          </div>
+                        </div>
+                        <div className={styles.itemActions}>
+                          <span className={styles.price}>{formatGold(item.AuctionInfo.BuyPrice)} G</span>
+                          <button 
+                            className={styles.removeButton}
+                            onClick={() => handleRemoveItem('ring', search.id)}
+                            aria-label="아이템 삭제"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+          </div>
         )}
       </div>
       
