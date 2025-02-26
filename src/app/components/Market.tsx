@@ -147,7 +147,11 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
   );
 };
 
-export default function Market() {
+interface MarketProps {
+  apiKey: string;
+}
+
+const Market: React.FC<MarketProps> = ({ apiKey }) => {
   const [itemsData, setItemsData] = useState<{ [key: string]: MarketItem }>({});
   const [loading, setLoading] = useState(false);
 
@@ -165,7 +169,9 @@ export default function Market() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch item price');
+        const errorText = await response.text();
+        console.error('API Error:', response.status, errorText);
+        throw new Error(`Failed to fetch item price: ${response.status} ${errorText}`);
       }
 
       const data = await response.json();
@@ -257,3 +263,5 @@ export default function Market() {
     </div>
   );
 }
+
+export default Market;

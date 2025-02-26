@@ -5,7 +5,7 @@ import styles from '@/app/styles/Gem.module.css';
 import { formatNumber } from '@/app/utils/format';
 import Image from 'next/image';
 
-interface GemSearchProps {
+interface GemProps {
   apiKey: string;
 }
 
@@ -70,13 +70,26 @@ const gemGroups: GemGroup[] = [
   }
 ];
 
-export default function Gem({ apiKey }: GemSearchProps) {
+const Gem: React.FC<GemProps> = ({ apiKey }) => {
   const [groups, setGroups] = useState<GemGroup[]>(gemGroups);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastRefreshTime, setLastRefreshTime] = useState<Date | null>(null);
+  const [showApiKeyAlert, setShowApiKeyAlert] = useState(false);
+
+  // API 키 체크 함수
+  const checkApiKey = () => {
+    if (!apiKey) {
+      setShowApiKeyAlert(true);
+      setTimeout(() => setShowApiKeyAlert(false), 3000); // 3초 후 알림 숨김
+      return false;
+    }
+    return true;
+  };
 
   const fetchGemPrices = async () => {
+    if (!checkApiKey()) return;
+
     setIsLoading(true);
     setError(null);
     setLastRefreshTime(new Date());
@@ -149,6 +162,7 @@ export default function Gem({ apiKey }: GemSearchProps) {
       </div>
 
       {error && <div className={styles.error}>{error}</div>}
+      {showApiKeyAlert && <div className={styles.error}>API 키가 없습니다.</div>}
 
       <div className={styles.gemGroups}>
         {groups.map((group, index) => (
@@ -183,3 +197,5 @@ export default function Gem({ apiKey }: GemSearchProps) {
     </div>
   );
 }
+
+export default Gem;

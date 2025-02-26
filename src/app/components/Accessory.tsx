@@ -178,7 +178,7 @@ interface SearchState {
   ring: SearchOption;
 }
 
-interface AccessorySearchProps {
+interface AccessoryProps {
   apiKey: string;
 }
 
@@ -674,7 +674,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({ type, data, searchState, 
   );
 };
 
-const AccessorySearch: React.FC<AccessorySearchProps> = ({ apiKey }) => {
+const Accessory: React.FC<AccessoryProps> = ({ apiKey }) => {
   const [searchState, setSearchState] = useState<SearchState>({
     common: initialCommonSearchOption,
     necklace: { effects: [] },
@@ -692,168 +692,24 @@ const AccessorySearch: React.FC<AccessorySearchProps> = ({ apiKey }) => {
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [lastRefreshTime, setLastRefreshTime] = useState<Date | null>(null);
   const autoRefreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [showApiKeyAlert, setShowApiKeyAlert] = useState(false);
 
-  // 자동 갱신 타이머 설정/해제
-  useEffect(() => {
-    if (autoRefresh && savedSearches.length > 0) {
-      // 5분마다 저장된 검색 결과 갱신
-      const refreshSearches = async () => {
-        setLastRefreshTime(new Date());
-        
-        // 각 저장된 검색에 대해 새로운 검색 실행
-        for (const search of savedSearches) {
-          setIsLoading(prev => ({ ...prev, [search.type]: true }));
-          try {
-            const response = await fetch('https://developer-lostark.game.onstove.com/auctions/items', {
-              method: 'POST',
-              headers: {
-                'accept': 'application/json',
-                'authorization': `bearer ${apiKey}`,
-                'content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                CategoryCode: search.type === 'necklace' ? 200010 : search.type === 'earring' ? 200020 : 200030,
-                ItemTier: 4,
-                ItemGrade: search.searchState.common.grade === '고대' ? '고대' : '유물',
-                PageNo: 1,
-                PageSize: 10,
-                SortCondition: 'ASC',
-                Sort: 'BUY_PRICE',
-                ItemTradeAllowCount: search.searchState.common.tradeCount || 0,
-                ItemUpgradeLevel: search.searchState.common.polishCount || 0,
-                ItemGradeQuality: search.searchState.common.quality || 0,
-                EtcOptions: search.searchState[search.type].effects.map(effect => {
-                  const effectMapping = getEffectMapping(search.type, effect.type, effect.level);
-                  return {
-                    FirstOption: 7,
-                    SecondOption: effectMapping.secondOption,
-                    Value: effectMapping.value,
-                    MinValue: effectMapping.value,
-                    MaxValue: effectMapping.value
-                  };
-                }).filter(option => option.SecondOption !== 0)
-              })
-            });
-
-            const responseText = await response.text();
-            if (!response.ok) {
-              throw new Error(`API Error: ${response.status} - ${responseText}`);
-            }
-
-            const data = responseText ? JSON.parse(responseText) : null;
-            
-            if (data?.Items?.length) {
-              // 각 검색 결과에서 최저가만 필터링
-              const filteredItems = data.Items.reduce((acc: AuctionItem[], item: AuctionItem) => {
-                const effectKey = search.searchState[search.type].effects
-                  .map(selectedEffect => {
-                    const mappedName = getEffectMappings()[selectedEffect.type] || selectedEffect.type;
-                    const matchingOption = item.Options.find(opt => 
-                      opt.Type === 'ACCESSORY_UPGRADE' && 
-                      opt.OptionName === mappedName
-                    );
-                    return `${selectedEffect.type}_${matchingOption?.Value || 0}`;
-                  })
-                  .sort()
-                  .join('_');
-                
-                const existingItem = acc.find(i => {
-                  const existingKey = search.searchState[search.type].effects
-                    .map(selectedEffect => {
-                      const mappedName = getEffectMappings()[selectedEffect.type] || selectedEffect.type;
-                      const matchingOption = i.Options.find(opt => 
-                        opt.Type === 'ACCESSORY_UPGRADE' && 
-                        opt.OptionName === mappedName
-                      );
-                      return `${selectedEffect.type}_${matchingOption?.Value || 0}`;
-                    })
-                    .sort()
-                    .join('_');
-                  return existingKey === effectKey;
-                });
-
-                if (!existingItem || item.AuctionInfo.BuyPrice < existingItem.AuctionInfo.BuyPrice) {
-                  if (existingItem) {
-                    acc = acc.filter(i => i !== existingItem);
-                  }
-                  acc.push(item);
-                }
-
-                return acc;
-              }, []);
-
-              setSavedSearches(prev => {
-                const otherSearches = prev.filter(s => s.id !== search.id);
-                return [...otherSearches, {
-                  ...search,
-                  data: {
-                    ...data,
-                    Items: filteredItems
-                  }
-                }];
-              });
-            }
-          } catch (error) {
-            console.error(`Error refreshing ${search.type}:`, error);
-          } finally {
-            setIsLoading(prev => ({ ...prev, [search.type]: false }));
-          }
-        }
-      };
-
-      autoRefreshIntervalRef.current = setInterval(refreshSearches, 5 * 60 * 1000);
-      // 활성화 즉시 첫 갱신 실행
-      refreshSearches();
-    } else if (autoRefreshIntervalRef.current) {
-      clearInterval(autoRefreshIntervalRef.current);
-      autoRefreshIntervalRef.current = null;
+  // API 키 체크 함수
+  const checkApiKey = () => {
+    if (!apiKey) {
+      setShowApiKeyAlert(true);
+      setTimeout(() => setShowApiKeyAlert(false), 3000); // 3초 후 알림 숨김
+      return false;
     }
-
-    return () => {
-      if (autoRefreshIntervalRef.current) {
-        clearInterval(autoRefreshIntervalRef.current);
-      }
-    };
-  }, [autoRefresh, savedSearches.length]);
-
-  const formatLastRefreshTime = (date: Date) => {
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const seconds = date.getSeconds().toString().padStart(2, '0');
-    return `${hours}:${minutes}:${seconds}`;
+    return true;
   };
 
+  // 검색 함수 수정
   const handleSearch = async (type: 'necklace' | 'earring' | 'ring') => {
+    if (!checkApiKey()) return;
+    
     setIsLoading(prev => ({ ...prev, [type]: true }));
-    setError(null);
-
     try {
-      const searchOptions = searchState[type].effects;
-      const etcOptions = searchOptions.map(effect => {
-        const effectMapping = getEffectMapping(type, effect.type, effect.level);
-        return {
-          FirstOption: 7,
-          SecondOption: effectMapping.secondOption,
-          Value: effectMapping.value,
-          MinValue: effectMapping.value,
-          MaxValue: effectMapping.value
-        };
-      }).filter(option => option.SecondOption !== 0);
-
-      const searchParams = {
-        CategoryCode: type === 'necklace' ? 200010 : type === 'earring' ? 200020 : 200030,
-        ItemTier: 4,
-        ItemGrade: searchState.common.grade === '고대' ? '고대' : '유물',
-        PageNo: 1,
-        PageSize: 10,
-        SortCondition: 'ASC',
-        Sort: 'BUY_PRICE',
-        ItemTradeAllowCount: searchState.common.tradeCount || 0,
-        ItemUpgradeLevel: searchState.common.polishCount || 0,
-        ItemGradeQuality: searchState.common.quality || 0,
-        EtcOptions: etcOptions
-      };
-
       const response = await fetch('https://developer-lostark.game.onstove.com/auctions/items', {
         method: 'POST',
         headers: {
@@ -861,7 +717,28 @@ const AccessorySearch: React.FC<AccessorySearchProps> = ({ apiKey }) => {
           'authorization': `bearer ${apiKey}`,
           'content-Type': 'application/json',
         },
-        body: JSON.stringify(searchParams)
+        body: JSON.stringify({
+          CategoryCode: type === 'necklace' ? 200010 : type === 'earring' ? 200020 : 200030,
+          ItemTier: 4,
+          ItemGrade: searchState.common.grade === '고대' ? '고대' : '유물',
+          PageNo: 1,
+          PageSize: 10,
+          SortCondition: 'ASC',
+          Sort: 'BUY_PRICE',
+          ItemTradeAllowCount: searchState.common.tradeCount || 0,
+          ItemUpgradeLevel: searchState.common.polishCount || 0,
+          ItemGradeQuality: searchState.common.quality || 0,
+          EtcOptions: searchState[type].effects.map(effect => {
+            const effectMapping = getEffectMapping(type, effect.type, effect.level);
+            return {
+              FirstOption: 7,
+              SecondOption: effectMapping.secondOption,
+              Value: effectMapping.value,
+              MinValue: effectMapping.value,
+              MaxValue: effectMapping.value
+            };
+          }).filter(option => option.SecondOption !== 0)
+        })
       });
 
       const responseText = await response.text();
@@ -872,57 +749,52 @@ const AccessorySearch: React.FC<AccessorySearchProps> = ({ apiKey }) => {
       const data = responseText ? JSON.parse(responseText) : null;
       
       if (data?.Items?.length) {
-        // 검색 조건을 문자열로 변환하여 검색 ID에 포함
-        const searchCondition = searchState[type].effects
-          .map(effect => `${effect.type}_${effect.level}`)
-          .sort()
-          .join('_');
+        // 각 검색 결과에서 최저가만 필터링
+        const filteredItems = data.Items.reduce((acc: AuctionItem[], item: AuctionItem) => {
+          const effectKey = searchState[type].effects
+            .map(selectedEffect => {
+              const mappedName = getEffectMappings()[selectedEffect.type] || selectedEffect.type;
+              const matchingOption = item.Options.find(opt => 
+                opt.Type === 'ACCESSORY_UPGRADE' && 
+                opt.OptionName === mappedName
+              );
+              return `${selectedEffect.type}_${matchingOption?.Value || 0}`;
+            })
+            .sort()
+            .join('_');
           
-        const searchId = `${type}_${searchCondition}_${Date.now()}`;
+          const existingItem = acc.find(i => {
+            const existingKey = searchState[type].effects
+              .map(selectedEffect => {
+                const mappedName = getEffectMappings()[selectedEffect.type] || selectedEffect.type;
+                const matchingOption = i.Options.find(opt => 
+                  opt.Type === 'ACCESSORY_UPGRADE' && 
+                  opt.OptionName === mappedName
+                );
+                return `${selectedEffect.type}_${matchingOption?.Value || 0}`;
+              })
+              .sort()
+              .join('_');
+            return existingKey === effectKey;
+          });
+
+          if (!existingItem || item.AuctionInfo.BuyPrice < existingItem.AuctionInfo.BuyPrice) {
+            if (existingItem) {
+              acc = acc.filter(i => i !== existingItem);
+            }
+            acc.push(item);
+          }
+
+          return acc;
+        }, []);
+
         setSavedSearches(prev => [...prev, {
-          id: searchId,
+          id: `${type}_${Date.now()}`,
           type,
           searchState: JSON.parse(JSON.stringify(searchState)),
           data: {
             ...data,
-            // 각 검색 결과에서 최저가만 필터링
-            Items: data.Items.reduce((acc: AuctionItem[], item: AuctionItem) => {
-              const effectKey = searchState[type].effects
-                .map(selectedEffect => {
-                  const mappedName = getEffectMappings()[selectedEffect.type] || selectedEffect.type;
-                  const matchingOption = item.Options.find(opt => 
-                    opt.Type === 'ACCESSORY_UPGRADE' && 
-                    opt.OptionName === mappedName
-                  );
-                  return `${selectedEffect.type}_${matchingOption?.Value || 0}`;
-                })
-                .sort()
-                .join('_');
-              
-              const existingItem = acc.find(i => {
-                const existingKey = searchState[type].effects
-                  .map(selectedEffect => {
-                    const mappedName = getEffectMappings()[selectedEffect.type] || selectedEffect.type;
-                    const matchingOption = i.Options.find(opt => 
-                      opt.Type === 'ACCESSORY_UPGRADE' && 
-                      opt.OptionName === mappedName
-                    );
-                    return `${selectedEffect.type}_${matchingOption?.Value || 0}`;
-                  })
-                  .sort()
-                  .join('_');
-                return existingKey === effectKey;
-              });
-
-              if (!existingItem || item.AuctionInfo.BuyPrice < existingItem.AuctionInfo.BuyPrice) {
-                if (existingItem) {
-                  acc = acc.filter(i => i !== existingItem);
-                }
-                acc.push(item);
-              }
-
-              return acc;
-            }, [])
+            Items: filteredItems
           }
         }]);
       }
@@ -934,12 +806,24 @@ const AccessorySearch: React.FC<AccessorySearchProps> = ({ apiKey }) => {
     }
   };
 
+  const formatLastRefreshTime = (date: Date) => {
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
   const handleRemoveItem = (type: 'necklace' | 'earring' | 'ring', searchId: string) => {
     setSavedSearches(prev => prev.filter(item => item.id !== searchId));
   };
 
   return (
     <div className={styles.container}>
+      {showApiKeyAlert && (
+        <div className={styles.apiKeyAlert}>
+          API 키가 없습니다. API 키를 입력해주세요.
+        </div>
+      )}
       <div className={styles.searchContainer}>
         <AccessorySearchSection
           type="necklace"
@@ -1161,4 +1045,4 @@ const AccessorySearch: React.FC<AccessorySearchProps> = ({ apiKey }) => {
   );
 };
 
-export default AccessorySearch;
+export default Accessory;
